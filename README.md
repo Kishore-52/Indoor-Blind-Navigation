@@ -293,7 +293,9 @@ If the environment is dark:
 ## 👥 Contributors
 
 * **Kishore J**
-* Add other team members here
+* **Rubhavarshini B**
+* **Omana S**
+* **Sanmathi S**
 
 ---
 
