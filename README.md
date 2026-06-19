@@ -8,22 +8,31 @@ An **AI-powered wearable assistive system** designed to help visually impaired p
 
 GPS-based navigation is often unreliable inside buildings. This project provides an affordable indoor navigation solution for visually impaired people using a Raspberry Pi-based intelligent belt.
 
-The webcam captures the surrounding environment, while a custom-trained YOLO model detects indoor objects and obstacles. Ultrasonic sensors measure the distance to nearby obstacles, and the system provides voice instructions such as moving left, moving right, or stopping.
+The webcam continuously captures the surrounding environment, while a custom-trained **Edge Impulse object-detection model** identifies important indoor objects and obstacles. The model achieved an accuracy of **93.8%** and can detect four object classes:
 
-An IMU sensor detects whether the user turns in the wrong direction. An LED light automatically improves camera visibility in low-light environments.
+* Person
+* Table
+* Chair
+* Door
+
+Ultrasonic sensors measure the distance to nearby obstacles, and the system provides voice instructions such as moving left, moving right, or stopping.
+
+An IMU sensor detects whether the user turns in the wrong direction. An LED light automatically improves webcam visibility in low-light environments.
 
 ---
 
 ## ✨ Key Features
 
 * Real-time indoor object and obstacle detection
+* Edge Impulse-based object-detection model
+* Model accuracy of **93.8%**
+* Detection of people, tables, chairs, and doors
 * Distance measurement using ultrasonic sensors
 * Voice-based navigation guidance
 * Left, right, and front obstacle identification
 * Wrong-turn detection using an IMU sensor
 * Buzzer warning for dangerous or incorrect movement
 * Automatic LED activation in low-light conditions
-* Custom-trained YOLO object-detection model
 * Raspberry Pi-based portable implementation
 * Wearable belt design
 
@@ -32,13 +41,14 @@ An IMU sensor detects whether the user turns in the wrong direction. An LED ligh
 ## ⚙️ How the System Works
 
 1. The webcam continuously captures the surrounding environment.
-2. The YOLO model detects indoor objects and obstacles.
-3. Ultrasonic sensors measure the distance to nearby obstacles.
-4. The system identifies whether an obstacle is on the left, right, or front.
-5. Voice instructions guide the user towards a safer direction.
-6. The IMU sensor checks whether the user follows the suggested direction.
-7. If the user turns incorrectly, the buzzer produces a warning sound.
-8. The LED turns on when the camera does not receive enough light.
+2. The Edge Impulse model processes the camera frames.
+3. The model detects people, tables, chairs, and doors.
+4. Ultrasonic sensors measure the distance to nearby obstacles.
+5. The system identifies whether an obstacle is on the left, right, or front.
+6. Voice instructions guide the user towards a safer direction.
+7. The IMU sensor checks whether the user follows the suggested direction.
+8. If the user turns incorrectly, the buzzer produces a warning sound.
+9. The LED turns on when the webcam does not receive enough light.
 
 ---
 
@@ -48,7 +58,7 @@ An IMU sensor detects whether the user turns in the wrong direction. An LED ligh
                          Webcam
                             |
                             v
-                   YOLO Object Detection
+              Edge Impulse Object Detection
                             |
                             v
 Ultrasonic Sensors --> Raspberry Pi 4 <-- IMU Sensor
@@ -70,7 +80,7 @@ Ultrasonic Sensors --> Raspberry Pi 4 <-- IMU Sensor
 | Ultrasonic Sensors   | Measure obstacle distance              |
 | IMU Sensor           | Detects user movement and wrong turns  |
 | Buzzer               | Provides warning alerts                |
-| LED Light            | Improves camera visibility in darkness |
+| LED Light            | Improves webcam visibility in darkness |
 | Speaker or Earphones | Provides voice instructions            |
 | Mini Breadboard      | Used for circuit connections           |
 | Jumper Wires         | Connect the hardware components        |
@@ -83,8 +93,8 @@ Ultrasonic Sensors --> Raspberry Pi 4 <-- IMU Sensor
 
 * Raspberry Pi OS
 * Python 3
+* Edge Impulse
 * OpenCV
-* Ultralytics YOLO
 * NumPy
 * RPi.GPIO or GPIO Zero
 * Text-to-Speech library
@@ -95,12 +105,47 @@ Ultrasonic Sensors --> Raspberry Pi 4 <-- IMU Sensor
 ## 🛠️ Technologies Used
 
 * **Python** — Main programming language
-* **YOLO** — Real-time object detection
-* **OpenCV** — Camera capture and image processing
-* **Raspberry Pi GPIO** — Hardware control
-* **Ultrasonic Sensors** — Distance measurement
+* **Edge Impulse** — Model training and object detection
+* **OpenCV** — Webcam capture and image processing
+* **Raspberry Pi 4** — Main edge-computing device
+* **Raspberry Pi GPIO** — Sensor and actuator control
+* **Ultrasonic Sensors** — Obstacle-distance measurement
 * **IMU Sensor** — Movement and direction detection
 * **Text-to-Speech** — Audio navigation guidance
+
+---
+
+## 📊 Edge Impulse Model Details
+
+| Model Information | Details                  |
+| ----------------- | ------------------------ |
+| Platform          | Edge Impulse             |
+| Model Type        | Object Detection         |
+| Achieved Accuracy | **93.8%**                |
+| Number of Classes | 4                        |
+| Deployment Device | Raspberry Pi 4           |
+| Input Source      | USB Webcam               |
+| Processing Type   | Real-time edge inference |
+
+### Model Classes
+
+```text
+person
+table
+chair
+door
+```
+
+The model was trained using images captured from different:
+
+* Indoor locations
+* Camera angles
+* Lighting conditions
+* Object distances
+* Backgrounds
+* Object positions
+
+A varied dataset helps the model identify objects more reliably in different indoor environments.
 
 ---
 
@@ -117,8 +162,8 @@ indoor-blind-navigation/
 ├── buzzer_control.py
 ├── led_control.py
 │
-├── models/
-│   └── best.pt
+├── edge_impulse_model/
+│   └── model.eim
 │
 ├── audio/
 │   ├── move_left.mp3
@@ -134,6 +179,8 @@ indoor-blind-navigation/
 ├── LICENSE
 └── README.md
 ```
+
+> Update the model filename and folder structure according to the actual Edge Impulse model exported for the Raspberry Pi.
 
 ---
 
@@ -161,25 +208,31 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-You can also install the main libraries manually:
+The main Python libraries can also be installed manually:
 
 ```bash
-pip install ultralytics opencv-python numpy pyttsx3 gpiozero
+pip install opencv-python numpy pyttsx3 gpiozero
 ```
 
-### 4. Add the trained model
+Install the required Edge Impulse runtime or SDK according to the deployment package exported from the Edge Impulse platform.
 
-Place the trained YOLO model in the following location:
+### 4. Add the Edge Impulse Model
+
+Export the trained model from Edge Impulse for Linux or Raspberry Pi deployment.
+
+Place the exported model in the following location:
 
 ```text
-models/best.pt
+edge_impulse_model/model.eim
 ```
 
-### 5. Connect the hardware
+Update the model path in the Python program when a different filename or location is used.
+
+### 5. Connect the Hardware
 
 Connect the webcam, ultrasonic sensors, IMU sensor, buzzer, LED, and speaker according to the GPIO configuration used in the source code.
 
-### 6. Run the project
+### 6. Run the Project
 
 ```bash
 python3 main.py
@@ -191,60 +244,44 @@ python3 main.py
 
 ```text
 Person detected ahead.
-Obstacle detected on the left.
-Move slightly to the right.
-Chair detected two metres ahead.
-Wrong direction detected.
+Chair detected on the left.
+Table detected ahead.
+Door detected on the right.
+Obstacle detected nearby.
+Move slightly to the left.
 Please turn right.
+Wrong direction detected.
 Low light detected. LED activated.
 ```
 
 ---
 
-## 🎯 Object-Detection Classes
-
-The custom-trained model can include indoor object classes such as:
+## 🧠 Detection and Navigation Logic
 
 ```text
-person
-chair
-table
-door
-staircase
-wall
-bed
-sofa
-pillar
-obstacle
-```
+Capture a frame using the webcam.
 
-The model should be trained using images captured from different:
+Run the Edge Impulse object-detection model.
 
-* Indoor locations
-* Camera angles
-* Lighting conditions
-* Object distances
-* Backgrounds
-* Building layouts
+If a person, table, chair, or door is detected:
+    Identify the detected object's position.
+    Estimate whether it is on the left, centre, or right.
+    Check the ultrasonic sensor distance.
+    Provide the appropriate voice guidance.
 
----
-
-## 🛡️ Safety Logic
-
-```text
-If an obstacle is detected within the safety distance:
-    Identify its position
-    Provide a voice instruction
-    Activate the buzzer when required
+If an obstacle is within the safety distance:
+    Warn the user through voice guidance.
+    Activate the buzzer when required.
+    Suggest a safer movement direction.
 
 If the user turns opposite to the instructed direction:
-    Detect the movement using the IMU sensor
-    Activate the warning buzzer
-    Repeat the correct direction
+    Detect the movement using the IMU sensor.
+    Activate the warning buzzer.
+    Repeat the correct direction.
 
 If the environment is dark:
-    Turn on the LED
-    Improve the webcam visibility
+    Turn on the LED.
+    Improve webcam visibility.
 ```
 
 ---
@@ -265,10 +302,12 @@ If the environment is dark:
 
 ## ⚠️ Current Limitations
 
-* Detection accuracy depends on the quality of the trained dataset.
-* Camera performance may decrease in poor-light conditions.
+* The current model detects only people, tables, chairs, and doors.
+* Detection accuracy depends on the quality and diversity of the training dataset.
+* Webcam performance may decrease in poor-light conditions.
 * Ultrasonic sensors may not correctly detect certain soft or angled surfaces.
 * Complex environments may generate multiple alerts simultaneously.
+* Object detection may be affected by occlusion or unusual viewing angles.
 * The system currently does not provide complete indoor map-based navigation.
 * The prototype requires further real-world testing and calibration.
 
@@ -284,8 +323,9 @@ If the environment is dark:
 * Multi-language voice guidance
 * Battery-level monitoring
 * Location sharing with caregivers
+* Additional object-detection classes
 * Improved staircase and doorway detection
-* Edge AI optimization for faster performance
+* Edge AI optimization for faster inference
 * Outdoor GPS navigation support
 
 ---
@@ -313,4 +353,5 @@ Unauthorized use of this project for academic, personal, research, or commercial
 
 This project is an assistive prototype developed for academic and research purposes. It should not be considered a complete replacement for a white cane, guide dog, caregiver, or certified mobility aid.
 
-The system must be tested carefully in controlled environments before real-world use. The developers are not responsible for injuries, accidents, or damages caused by improper use or hardware failure.
+The system must be tested carefully in controlled environments before real-world use. The developers are not responsible for injuries, accidents, or damages caused by improper use, inaccurate detection, sensor failure, or hardware failure.
+
