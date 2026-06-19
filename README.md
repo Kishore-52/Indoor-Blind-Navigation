@@ -155,12 +155,12 @@ A varied dataset helps the model identify objects more reliably in different ind
 indoor-blind-navigation/
 │
 ├── main.py
-├── object_detection.py
-├── ultrasonic_sensor.py
-├── imu_direction.py
-├── audio_guidance.py
-├── buzzer_control.py
-├── led_control.py
+|  ├── object_detection.py
+|  ├── ultrasonic_sensor.py
+|  ├── imu_direction.py
+|  ├── audio_guidance.py
+|  ├── buzzer_control.py
+|  ├── led_control.py
 │
 ├── edge_impulse_model/
 │   └── model.eim
@@ -172,8 +172,10 @@ indoor-blind-navigation/
 │   └── wrong_direction.mp3
 │
 ├── images/
-│   ├── prototype.jpg
-│   └── system_architecture.png
+│   ├── chair
+│   └── door
+│   └── person
+│   └── table
 │
 ├── requirements.txt
 ├── LICENSE
