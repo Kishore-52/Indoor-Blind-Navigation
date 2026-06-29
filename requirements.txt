@@ -1,0 +1,6 @@
+opencv-python
+numpy
+requests
+edge-impulse-linux
+RPi.GPIO
+mpu6050-raspberrypi
